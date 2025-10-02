@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación Minimalista: TIC en Organizaciones</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Aplicamos scroll suave y estilo de fuente */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0d0d; /* Negro profundo para el fondo */
+            color: #e5e7eb; /* Texto blanco suave */
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        /* 1. Barra de Navegación Superior Fija (Ocultable) */
+        nav.top-nav {
+            position: fixed; /* CLAVE: Ahora es fijo, no sticky */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 30;
+            background-color: #0d0d0d; /* Fondo oscuro sólido */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            padding: 1rem 0;
+            border-bottom: 1px solid #1f2937;
+            /* Transición para el efecto de deslizar (smooth slide up) */
+            transition: transform 0.4s ease-out; 
+            transform: translateY(0); /* Visible por defecto */
+        }
+
+        /* Clase que se agrega con JS para OCULTAR la barra */
+        nav.top-nav.hidden-nav {
+            transform: translateY(-100%); /* Desliza completamente hacia arriba */
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            color: #9ca3af; /* Gris claro */
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: color 0.3s, background-color 0.3s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #3b82f6; /* Azul brillante */
+            background-color: #1f2937; /* Fondo sutil para el activo */
+        }
+
+        /* 2. Contenedor Principal Centrado (Minimalista) */
+        .main-content {
+            margin: 0 auto; /* Centrar horizontalmente */
+            /* Ajuste de padding para compensar la altura de la barra de navegación fija */
+            padding: 6rem 1rem 3rem 1rem; /* Aumentamos el padding superior */
+            max-width: 800px; 
+            width: 100%;
+        }
+
+        /* 3. Estilo de las Secciones de Contenido (resto de estilos se mantienen) */
+        .presentation-section {
+            background-color: #111827; 
+            padding: 30px; 
+            margin-bottom: 30px; 
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            border: 1px solid #1f2937;
+        }
+
+        /* Títulos */
+        .presentation-section h1 {
+            font-size: 2rem; 
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 5px;
+            display: inline-block;
+        }
+        
+        /* Listas (ul/ol) - Diseño más limpio */
+        .content-box ul, .content-box ol {
+            padding: 10px 0;
+            list-style-type: none; 
+            margin-left: 0;
+        }
+        
+        .content-box li {
+            background-color: #1f2937;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            border-left: 3px solid #93c5fd; 
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+        }
+        
+        /* Efecto "salto de cuadro" en listas */
+        .content-box li:hover {
+            background-color: #2d3748;
+            transform: translateY(-3px); 
+            box-shadow: 0 5px 10px rgba(59, 130, 246, 0.15); 
+        }
+
+        /* DOFA Grid Styling */
+        .dofa-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .dofa-item {
+            padding: 15px;
+            border-radius: 8px;
+            color: #1f2937; 
+            font-weight: 600;
+            text-align: center;
+            border: 1px solid transparent;
+            transition: all 0.3s ease-in-out; 
+        }
+
+        /* Efecto "salto de cuadro" en DOFA */
+        .dofa-item:hover {
+            transform: translateY(-6px) scale(1.02); 
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); 
+            z-index: 10;
+        }
+
+        .dofa-item h2 {
+            font-size: 1.15rem; 
+            margin-bottom: 10px;
+            font-weight: 800;
+            color: #111827;
+        }
+        /* Colores del DOFA (Colores de alto impacto con texto oscuro) */
+        .fortalezas { background-color: #34d399; } 
+        .oportunidades { background-color: #60a5fa; } 
+        .debilidades { background-color: #fca5a5; } 
+        .amenazas { background-color: #fcd34d; } 
+
+        /* 4. Icono Flotante (Menú Móvil) - El botón móvil permanece fijo */
+        .menu-float-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 40;
+            width: 50px;
+            height: 50px;
+            background-color: #3b82f6; 
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            display: none; 
+        }
+        @media (max-width: 767px) {
+            .menu-float-button {
+                display: flex;
+            }
+        }
+        .menu-float-button:hover {
+            background-color: #2563eb;
+            transform: scale(1.1);
+        }
+
+        /* 5. Estilo del Menú Desplegable (Mobile Drawer) */
+        .mobile-menu-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 0; 
+            background-color: #111827;
+            z-index: 50;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            box-shadow: -4px 0 10px rgba(0, 0, 0, 0.6);
+        }
+        .mobile-menu-drawer.open {
+            width: 250px;
+        }
+        .mobile-menu-drawer a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #e5e7eb;
+            display: block;
+            transition: 0.3s;
+            border-bottom: 1px solid #1f2937;
+        }
+        .mobile-menu-drawer a:hover {
+            background-color: #374151;
+            color: #3b82f6;
+        }
+        .mobile-menu-drawer .close-btn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+            color: #3b82f6;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- BARRA DE NAVEGACIÓN SUPERIOR (PC) -->
+    <nav class="top-nav" id="main-nav">
+        <div class="max-w-3xl mx-auto flex justify-between items-center px-4 md:px-0 w-full">
+            <div class="text-xl font-bold text-white">
+                <span class="text-blue-400">TIC</span> Reporte
+            </div>
+            <!-- Links visibles solo en Desktop -->
+            <div class="hidden md:flex space-x-4" id="desktop-links">
+                <a href="#intro" class="nav-link active">Importancia</a>
+                <a href="#evolucion" class="nav-link">Evolución</a>
+                <a href="#dofa" class="nav-link">DOFA</a>
+                <a href="#tendencias" class="nav-link">Tendencias</a> 
+                <a href="#conclusiones" class="nav-link">Conclusiones</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="main-content">
+        
+        <!-- Sección 1: Importancia -->
+        <section id="intro" class="presentation-section">
+            <h1>1. Importancia de las TIC en las Organizaciones</h1>
+            <p class="text-lg mb-4 text-gray-300">
+                Las Tecnologías de la Información y Comunicación (TIC) son el **motor estratégico** que impulsa la competitividad y la innovación en el entorno empresarial actual.
+            </p>
+            <p class="text-md font-bold mb-3">Elementos de Impacto:</p>
+            <ul>
+                <li><strong>Eficiencia Operacional:</strong> La automatización avanzada minimiza errores humanos y reduce drásticamente los costos operativos.</li>
+                <li><strong>Ventaja Competitiva:</strong> Capacidad de innovar rápidamente en servicios y modelos de negocio.</li>
+                <li><strong>Inteligencia de Negocios:</strong> Uso de datos en tiempo real (Big Data) para fundamentar la toma de decisiones.</li>
+                <li><strong>Conectividad:</strong> Plataformas unificadas (ERP, CRM) que garantizan una colaboración fluida entre áreas.</li>
+            </ul>
+        </section>
+
+        <!-- Sección 2: Evolución de las TIC -->
+        <section id="evolucion" class="presentation-section">
+            <h1>2. Evolución de las TIC: De la Oficina a la Nube</h1>
+            <p class="text-lg mb-4 text-gray-300">
+                El viaje de las TIC ha transformado la forma en que las empresas crean valor y se organizan internamente.
+            </p>
+            <ol class="pl-5">
+                <li><strong>Computación (80s-90s):</strong> Énfasis en la **productividad individual** con software de escritorio.</li>
+                <li><strong>Conectividad (90s-00s):</strong> Auge de Internet. Las empresas se centran en la comunicación y **establecimiento de redes**.</li>
+                <li><strong>Integración (00s-10s):</strong> Consolidación de sistemas ERP y SCM para la gestión integral de recursos.</li>
+                <li><strong>Transformación Digital (Actual):</strong> Dominada por la **Nube, IA, IoT, y Ciberseguridad**, enfocada en ecosistemas digitales y análisis predictivo.</li>
+            </ol>
+        </section>
+
+        <!-- Sección 3: Análisis DOFA -->
+        <section id="dofa" class="presentation-section">
+            <h1>3. Análisis DOFA (SWOT) de la Adopción de TIC</h1>
+            <p class="text-lg mb-4 text-gray-300">
+                Factores internos (F/D) y externos (O/A) críticos en la implementación de tecnologías.
+            </p>
+            <div class="dofa-grid">
+                <div class="dofa-item fortalezas">
+                    <h2>Fortalezas (F)</h2>
+                    <ul class="text-left text-xs font-normal text-gray-800 list-disc pl-3">
+                        <li>Innovación Constante.</li>
+                        <li>Escalabilidad y flexibilidad.</li>
+                        <li>Mejora de la eficiencia.</li>
+                    </ul>
+                </div>
+                <div class="dofa-item oportunidades">
+                    <h2>Oportunidades (O)</h2>
+                    <ul class="text-left text-xs font-normal text-gray-800 list-disc pl-3">
+                        <li>Acceso a Mercados Nuevos.</li>
+                        <li>Automatización avanzada.</li>
+                        <li>Inteligencia de negocios (Big Data).</li>
+                    </ul>
+                </div>
+                <div class="dofa-item debilidades">
+                    <h2>Debilidades (D)</h2>
+                    <ul class="text-left text-xs font-normal text-gray-800 list-disc pl-3">
+                        <li>Altos Costos de Mantenimiento.</li>
+                        <li>Resistencia cultural al cambio.</li>
+                        <li>Dependencia de proveedores externos.</li>
+                    </ul>
+                </div>
+                <div class="dofa-item amenazas">
+                    <h2>Amenazas (A)</h2>
+                    <ul class="text-left text-xs font-normal text-gray-800 list-disc pl-3">
+                        <li>Riesgos de Ciberdelincuencia.</li>
+                        <li>Obsolescencia tecnológica rápida.</li>
+                        <li>Regulaciones de privacidad (GDPR).</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Sección 4: Tendencias a Futuro -->
+        <section id="tendencias" class="presentation-section">
+            <h1>4. Tendencias a Futuro en la Adopción de TIC</h1>
+            <p class="text-lg mb-4 text-gray-300">
+                Las organizaciones deben estar preparadas para las próximas olas de innovación.
+            </p>
+            <ul>
+                <li><strong>Inteligencia Artificial (IA) Generalizada:</strong> Integración en todas las funciones empresariales.</li>
+                <li><strong>Edge Computing:</strong> Procesamiento de datos más cerca de la fuente para reducir la latencia.</li>
+                <li><strong>Ciberseguridad Proactiva:</strong> Defensa impulsada por Machine Learning.</li>
+                <li><strong>Metaverso Empresarial:</strong> Uso de realidad aumentada y virtual para capacitación y colaboración.</li>
+            </ul>
+        </section>
+
+        <!-- Sección 5: Conclusiones -->
+        <section id="conclusiones" class="presentation-section">
+            <h1>5. Conclusiones</h1>
+            <p class="text-xl mb-6 text-gray-300 font-semibold">
+                La gestión exitosa de las TIC es sinónimo de **visión a largo plazo** y **cultura de adaptabilidad**.
+            </p>
+            <ul>
+                <li><strong>La Estrategia es Primero:</strong> La tecnología debe estar alineada con los objetivos empresariales.</li>
+                <li><strong>Ciberseguridad Proactiva:</strong> Tratar la seguridad como una inversión y no como un gasto.</li>
+                <li><strong>Adaptación Constante:</strong> Crear una cultura que abrace la formación continua y las innovaciones.</li>
+            </ul>
+            <p class="mt-8 text-2xl font-extrabold text-blue-400 text-center">FIN DEL REPORTE</p>
+        </section>
+        
+    </div>
+
+    <!-- ICONO FLOTANTE Y MENÚ MÓVIL ("Icono al costado") -->
+    <div class="menu-float-button" onclick="toggleMobileMenu()">
+        &#9776; <!-- Icono de Hamburguesa -->
+    </div>
+
+    <div id="mobile-menu-drawer" class="mobile-menu-drawer">
+        <a href="javascript:void(0)" class="close-btn" onclick="toggleMobileMenu()">&times;</a>
+        <a href="#intro" onclick="toggleMobileMenu()">1. Importancia</a>
+        <a href="#evolucion" onclick="toggleMobileMenu()">2. Evolución</a>
+        <a href="#dofa" onclick="toggleMobileMenu()">3. Análisis DOFA</a>
+        <a href="#tendencias" onclick="toggleMobileMenu()">4. Tendencias</a> 
+        <a href="#conclusiones" onclick="toggleMobileMenu()">5. Conclusiones</a>
+    </div>
+
+    <script>
+        const nav = document.getElementById('main-nav');
+        const mobileMenu = document.getElementById('mobile-menu-drawer');
+
+        // 1. Lógica para que el Nav DESAPAREZCA al hacer scroll
+        window.addEventListener('scroll', () => {
+            // El nav es visible solo en los primeros 50px de scroll.
+            if (window.scrollY > 50) {
+                // Ocultar si se ha bajado más de 50px
+                nav.classList.add('hidden-nav');
+            } else {
+                // Mostrar si estamos en la parte superior
+                nav.classList.remove('hidden-nav');
+            }
+        });
+
+
+        // 2. Lógica para el menú móvil (Icono flotante)
+        function toggleMobileMenu() {
+            if (mobileMenu.classList.contains('open')) {
+                mobileMenu.classList.remove('open');
+            } else {
+                mobileMenu.classList.add('open');
+            }
+        }
+        
+
+        // 3. Lógica para resaltar el link activo en la navegación mientras se hace scroll
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.presentation-section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const mobileLinks = document.querySelectorAll('#mobile-menu-drawer a');
+            
+            // Función para actualizar el estado activo de los enlaces
+            const updateActiveLinks = (targetId) => {
+                const allLinks = [...navLinks, ...mobileLinks];
+                allLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                const activeDesktopLink = document.querySelector(`#desktop-links a[href="#${targetId}"]`);
+                if (activeDesktopLink) activeDesktopLink.classList.add('active');
+
+                // Si quieres resaltar también en el menú móvil
+                const activeMobileLink = document.querySelector(`#mobile-menu-drawer a[href="#${targetId}"]`);
+                if (activeMobileLink) activeMobileLink.classList.add('active');
+            };
+
+            const options = {
+                root: null, 
+                rootMargin: '0px',
+                threshold: 0.3 
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        updateActiveLinks(entry.target.id);
+                    }
+                });
+            }, options);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
